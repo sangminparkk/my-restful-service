@@ -23,5 +23,10 @@ public class UserController {
         return userDaoService.findOne(id);
     }
 
+    @PostMapping("/users")
+    public User createUser(@RequestBody User user) {
+        return userDaoService.save(user);
+    }
+
 }
 
