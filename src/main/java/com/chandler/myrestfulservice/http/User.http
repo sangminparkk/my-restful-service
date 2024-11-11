@@ -1,0 +1,9 @@
+### 유저 생성
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+    "id": null,
+    "name": "JPA",
+    "joinedAt": null
+}
