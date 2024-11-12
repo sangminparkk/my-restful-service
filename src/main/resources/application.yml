@@ -1,1 +1,3 @@
-spring.application.name=my-restful-service
+spring:
+  messages:
+    basename: messages
