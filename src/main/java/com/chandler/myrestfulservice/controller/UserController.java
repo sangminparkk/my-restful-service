@@ -3,8 +3,11 @@ package com.chandler.myrestfulservice.controller;
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.service.UserDaoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,11 +24,18 @@ public class UserController {
     @GetMapping("/users/{id}")
     public User findUser(@PathVariable Integer id) {
         return userDaoService.findOne(id);
-    }
+    }tus
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
-        return userDaoService.save(user);
+    public ResponseEntity createUser(@RequestBody User user) {
+        User savedUser = userDaoService.save(user);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedUser.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(savedUser);
     }
 
 }
