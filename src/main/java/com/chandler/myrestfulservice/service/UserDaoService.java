@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -47,5 +48,20 @@ public class UserDaoService {
 
         users.add(user);
         return user;
+    }
+
+    public User deleteById(Integer id) {
+        Iterator<User> iterator = users.iterator();
+
+        while (iterator.hasNext()) {
+            User user = iterator.next();
+
+            if (user.getId().equals(id)) {
+                iterator.remove();
+                return user;
+            }
+        }
+
+        return null;
     }
 }

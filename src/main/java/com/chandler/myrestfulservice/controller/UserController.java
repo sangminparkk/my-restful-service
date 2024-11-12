@@ -46,5 +46,16 @@ public class UserController {
         return ResponseEntity.created(location).body(savedUser);
     }
 
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity deleteUser(@PathVariable Integer id) {
+        User user = userDaoService.deleteById(id);
+
+        //TODO: exception 반드시 필요한가?
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return ResponseEntity.noContent().build();
+    }
 }
 
