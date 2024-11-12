@@ -1,6 +1,7 @@
 package com.chandler.myrestfulservice.controller;
 
 import com.chandler.myrestfulservice.domain.User;
+import com.chandler.myrestfulservice.exception.UserNotFoundException;
 import com.chandler.myrestfulservice.service.UserDaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,16 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public User findUser(@PathVariable Integer id) {
-        return userDaoService.findOne(id);
-    }tus
+    public User findUser(@PathVariable Integer id) throws UserNotFoundException {
+        User user = userDaoService.findOne(id);
+
+        //TODO: 존재하지 않는 id인 경우 Exception
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        return user;
+    }
 
     @PostMapping("/users")
     public ResponseEntity createUser(@RequestBody User user) {
