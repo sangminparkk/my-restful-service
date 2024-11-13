@@ -1,6 +1,7 @@
 package com.chandler.myrestfulservice.controller;
 
 import com.chandler.myrestfulservice.domain.AdminUser;
+import com.chandler.myrestfulservice.domain.AdminUserV2;
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.exception.UserNotFoundException;
 import com.chandler.myrestfulservice.service.UserDaoService;
@@ -47,7 +48,7 @@ public class AdminUserController {
     }
 
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/v1/users/{id}")
     public MappingJacksonValue findUserForAdmin(@PathVariable Integer id) throws UserNotFoundException {
         User user = userDaoService.findOne(id);
 
@@ -63,6 +64,28 @@ public class AdminUserController {
         FilterProvider filters = new SimpleFilterProvider().addFilter("UserInfo", filter);
 
         MappingJacksonValue mapping = new MappingJacksonValue(adminUser);
+        mapping.setFilters(filters);
+
+        return mapping;
+    }
+
+    @GetMapping("/v2/users/{id}")
+    public MappingJacksonValue findUserForAdminV2(@PathVariable Integer id) throws UserNotFoundException {
+        User user = userDaoService.findOne(id);
+
+        AdminUserV2 adminUserV2 = new AdminUserV2();
+
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        } else {
+            BeanUtils.copyProperties(user, adminUserV2);
+            adminUserV2.setGrade("VIP"); // property 위치에서 작업할 것
+        }
+
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("id", "name", "joinedAt", "grade");
+        FilterProvider filters = new SimpleFilterProvider().addFilter("UserInfoV2", filter);
+
+        MappingJacksonValue mapping = new MappingJacksonValue(adminUserV2);
         mapping.setFilters(filters);
 
         return mapping;
