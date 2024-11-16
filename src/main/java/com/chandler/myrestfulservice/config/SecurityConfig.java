@@ -24,7 +24,10 @@ public class SecurityConfig {
                         request.requestMatchers(PathRequest.toH2Console()).permitAll()
                                 .requestMatchers("/users/**").permitAll()
                                 .anyRequest().authenticated())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()))
+                .csrf(csrf -> {
+                    csrf.ignoringRequestMatchers(PathRequest.toH2Console());
+                    csrf.ignoringRequestMatchers("/users/**");
+                })
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .build();
     }
