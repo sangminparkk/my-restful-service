@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -53,6 +54,10 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity createUser(@Valid @RequestBody User user) {
+        if (user.getJoinedAt() == null) {
+            user.setJoinedAt(LocalDateTime.now());
+        }
+
         User savedUser = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
