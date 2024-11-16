@@ -19,4 +19,6 @@ spring:
       ddl-auto: create-drop # query
     show-sql: true # log
     defer-datasource-initialization: true # initial script file
-
+    properties:
+      hibernate:
+        format_sql: true
