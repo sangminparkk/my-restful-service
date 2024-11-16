@@ -1,7 +1,32 @@
-### 유저 생성
 POST http://localhost:8080/users
 Content-Type: application/json
 
 {
-    "name": "spring"
+    "id": 20,
+    "name": "s"
+}
+
+### 로케일
+GET http://localhost:8080/internationalized
+Accept-Language: kr
+
+### version
+GET http://localhost:8080/admin/v1/users/1
+Accept: application/vnd.company.appv1+json
+Accept-Language: kr
+
+### JPA method
+DELETE http://localhost:8080/users/4
+
+### JPA method
+GET http://localhost:8080/users/4
+
+### JPA
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "chandler",
+  "password" : "1234",
+  "ssn" : "111-1111"
 }
