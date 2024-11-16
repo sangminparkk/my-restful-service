@@ -3,6 +3,7 @@ package com.chandler.myrestfulservice.controller;
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.exception.UserNotFoundException;
 import com.chandler.myrestfulservice.repository.UserRepository;
+import com.chandler.myrestfulservice.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,8 +32,9 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/users")
-    public List<User> usersList() {
-        return userRepository.findAll();
+    public UserResponse usersList() {
+        List<User> users = userRepository.findAll();
+        return new UserResponse(userRepository.count(), users);
     }
 
     @Operation(summary = "사용자 정보 조회 API", description = "사용자 ID를 이용해서 세부 정보를 조회합니다.")
