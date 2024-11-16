@@ -2,7 +2,7 @@ package com.chandler.myrestfulservice.controller;
 
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.exception.UserNotFoundException;
-import com.chandler.myrestfulservice.service.UserDaoService;
+import com.chandler.myrestfulservice.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,11 +27,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserController {
 
-    private final UserDaoService userDaoService;
+    private final UserRepository userRepository;
 
     @GetMapping("/users")
     public List<User> usersList() {
-        return userDaoService.findAll();
+        return userRepository.findAll();
     }
 
     @Operation(summary = "사용자 정보 조회 API", description = "사용자 ID를 이용해서 세부 정보를 조회합니다.")
@@ -44,12 +44,8 @@ public class UserController {
     )
     @GetMapping("/users/{id}")
     public EntityModel<User> findUser(@Parameter(description = "사용자 ID", required = true, example = "1") @PathVariable Integer id) throws UserNotFoundException {
-        User user = userDaoService.findOne(id);
-
-        //TODO: 존재하지 않는 id인 경우 Exception
-        if (user == null) {
-            throw new UserNotFoundException("User not found");
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not Found"));
 
         Link link = linkTo(methodOn(this.getClass()).usersList()).withRel("all-users");
         return EntityModel.of(user, link);
@@ -57,7 +53,7 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity createUser(@Valid @RequestBody User user) {
-        User savedUser = userDaoService.save(user);
+        User savedUser = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -69,13 +65,7 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity deleteUser(@PathVariable Integer id) {
-        User user = userDaoService.deleteById(id);
-
-        //TODO: exception 반드시 필요한가?
-        if (user == null) {
-            throw new UserNotFoundException("User not found");
-        }
-
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -22,6 +22,7 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(PathRequest.toH2Console()).permitAll()
+                                .requestMatchers("/users/**").permitAll()
                                 .anyRequest().authenticated())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
