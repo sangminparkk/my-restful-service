@@ -1,3 +1,22 @@
 spring:
   messages:
     basename: messages
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true # console
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # query
+    show-sql: true # log
+    defer-datasource-initialization: true # initial script file
+
