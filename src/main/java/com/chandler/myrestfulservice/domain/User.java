@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -17,7 +19,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @JsonIgnoreProperties(value = {"password", "ssn"})
 @Getter
 @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity(name = "USERS")
 public class User {
@@ -39,4 +41,15 @@ public class User {
 
     @Schema(title = "사용자 주민번호", description = "사용자 주민번호를 입력하세요.")
     private String ssn;
+
+    @OneToMany(mappedBy = "user") //TODO: mapped by 의미 찾아보기(연관관계 주인?)
+    private List<Post> posts;
+
+    public User(Integer id, String name, LocalDateTime joinedAt, String password, String ssn) {
+        this.id = id;
+        this.name = name;
+        this.joinedAt = joinedAt;
+        this.password = password;
+        this.ssn = ssn;
+    }
 }
