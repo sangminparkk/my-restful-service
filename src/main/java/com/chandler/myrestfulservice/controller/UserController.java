@@ -3,6 +3,7 @@ package com.chandler.myrestfulservice.controller;
 import com.chandler.myrestfulservice.domain.Post;
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.exception.UserNotFoundException;
+import com.chandler.myrestfulservice.repository.PostRepository;
 import com.chandler.myrestfulservice.repository.UserRepository;
 import com.chandler.myrestfulservice.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     @GetMapping("/users")
     public UserResponse usersList() {
@@ -81,6 +83,21 @@ public class UserController {
     public List<Post> postsByUser(@PathVariable Integer id) {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not Found"));
         return user.getPosts();
+    }
+
+    @PostMapping("/users/{id}/posts")
+    public ResponseEntity CreatePost(@PathVariable Integer id, @Valid @RequestBody Post post) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not Found"));
+        post.setUser(user);
+        postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(post.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(post);
     }
 
 }
