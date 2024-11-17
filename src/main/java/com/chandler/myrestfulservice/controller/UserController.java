@@ -1,5 +1,6 @@
 package com.chandler.myrestfulservice.controller;
 
+import com.chandler.myrestfulservice.domain.Post;
 import com.chandler.myrestfulservice.domain.User;
 import com.chandler.myrestfulservice.exception.UserNotFoundException;
 import com.chandler.myrestfulservice.repository.UserRepository;
@@ -75,5 +76,12 @@ public class UserController {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/users/{id}/posts")
+    public List<Post> postsByUser(@PathVariable Integer id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not Found"));
+        return user.getPosts();
+    }
+
 }
 
